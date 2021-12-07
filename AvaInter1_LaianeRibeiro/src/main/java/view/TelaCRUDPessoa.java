@@ -20,14 +20,27 @@ import javax.swing.SwingConstants;
 
 import com.mysql.cj.x.protobuf.MysqlxDatatypes.Object;
 
+import control.PessoaControle;
+import model.Pessoa;
+
+
 
 public class TelaCRUDPessoa<objeto, objeto1> extends JInternalFrame {
 	private JTextField textCodigo;
 	private JTextField textNome;
-	private JTextField textValorPago;
-	private JTextField textField;
+	private JTextField textTelefone;
+	private JTextField textEndereco;
+    private Pessoa objeto; 
+    private PessoaControle controle = new PessoaControle ();
 
-
+	public void limparTela() {
+	    objeto = null;
+	    textNome.setText("");
+	    textTelefone.setText("");
+	    textEndereco.setText("");
+	    textCodigo.setText("");
+	    
+	}
 	/**
 	 * Launch the application.
 	 */
@@ -75,14 +88,63 @@ public class TelaCRUDPessoa<objeto, objeto1> extends JInternalFrame {
 		JButton btninserir = new JButton("Inserir");
 		btninserir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				objeto = new Pessoa (null, textNome.getText(), textTelefone.getText(), textEndereco.getText());
+				controle.inserir(objeto);
+				JOptionPane.showMessageDialog(null, "Pessoa cadastrada com sucesso");
+			
 			}
 		});
-				
+					
 		JButton btnExcluir = new JButton("Excluir");
+		btnExcluir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (objeto!=null) {
+					controle.excluir(objeto);
+			     
+					JOptionPane.showMessageDialog(null, "Pessoa excluída com sucesso.");
+			}else {
+					JOptionPane.showMessageDialog(null, "Não há pessoa a ser excluída.");
+				}
+				   limparTela ();
+		
+		
+			}
+		});
 		
 		JButton btnConsultar = new JButton("Consultar");
+		btnConsultar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Integer valor = Integer.parseInt(textIDProfissional.getText());
+	            objeto =  controle.buscarPorId(valor);
+	            if (objeto!=null) {					
+	            	textEndereco.setText(String.valueOf(objeto.getEndereço()));
+	            	textNome.setText(objeto.getNome());
+	            	textTelefone.setText(objeto.getTelefone());
+	            	}else {
+	            		JOptionPane.showMessageDialog(null, "Não existe Pessoa com esse código");
+	            		textCodigo.setText("");
+	            	}
+
+			}
+		});
 			
 		JButton btnAlterar = new JButton("Alterar");
+		btnAlterar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (objeto!=null) {
+					objeto.setEndereço(textEndereco.getText());
+					objeto.setNome(textNome.getText());
+					objeto.setTelefone(textTelefone.getText());
+					controle.alterar(objeto);
+					JOptionPane.showMessageDialog(null, "Pessoa alterada com sucesso.");
+				}else {
+					JOptionPane.showMessageDialog(null, "Não há Pessoa a ser modificada.");
+					limparTela();
+				}
+	
+			}
+		});
+		
 		
 		JLabel lblTitulo = new JLabel("Menu Pessoa");
 		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
@@ -90,38 +152,51 @@ public class TelaCRUDPessoa<objeto, objeto1> extends JInternalFrame {
 		
 		JLabel lblTelefone = new JLabel("Telefone:");
 		
-		textValorPago = new JTextField();
-		textValorPago.setColumns(10);
+		textTelefone = new JTextField();
+		textTelefone.setColumns(10);
 		
-		JLabel lblTelefone_1 = new JLabel("Endere\u00E7o:");
+		JLabel lblEndereco = new JLabel("Endere\u00E7o:");
 		
-		textField = new JTextField();
-		textField.setColumns(10);
+		textEndereco = new JTextField();
+		textEndereco.setColumns(10);
+		
+		JButton btnLimpaATela = new JButton("Limpa a tela");
+		btnLimpaATela.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				limparTela();
+			}
+		});
+		btnLimpaATela.setForeground(Color.RED);
 		GroupLayout gl_PainelCampos = new GroupLayout(PainelCampos);
 		gl_PainelCampos.setHorizontalGroup(
 			gl_PainelCampos.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_PainelCampos.createSequentialGroup()
 					.addGroup(gl_PainelCampos.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_PainelCampos.createSequentialGroup()
-							.addContainerGap()
 							.addGroup(gl_PainelCampos.createParallelGroup(Alignment.LEADING)
 								.addGroup(gl_PainelCampos.createSequentialGroup()
-									.addComponent(lblCodigo, GroupLayout.PREFERRED_SIZE, 79, GroupLayout.PREFERRED_SIZE)
-									.addGap(18)
-									.addComponent(textCodigo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-								.addGroup(gl_PainelCampos.createSequentialGroup()
-									.addComponent(lblNome, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addComponent(textNome, GroupLayout.PREFERRED_SIZE, 299, GroupLayout.PREFERRED_SIZE))
-								.addGroup(gl_PainelCampos.createSequentialGroup()
-									.addGroup(gl_PainelCampos.createParallelGroup(Alignment.TRAILING)
-										.addComponent(lblTelefone_1, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
-										.addComponent(lblTelefone, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE))
-									.addPreferredGap(ComponentPlacement.RELATED)
+									.addContainerGap()
 									.addGroup(gl_PainelCampos.createParallelGroup(Alignment.LEADING)
-										.addComponent(textField, GroupLayout.PREFERRED_SIZE, 299, GroupLayout.PREFERRED_SIZE)
-										.addComponent(textValorPago, GroupLayout.PREFERRED_SIZE, 299, GroupLayout.PREFERRED_SIZE))))
-							.addGap(26)
+										.addGroup(gl_PainelCampos.createSequentialGroup()
+											.addComponent(lblCodigo, GroupLayout.PREFERRED_SIZE, 79, GroupLayout.PREFERRED_SIZE)
+											.addGap(18)
+											.addComponent(textCodigo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+										.addGroup(gl_PainelCampos.createSequentialGroup()
+											.addComponent(lblNome, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
+											.addPreferredGap(ComponentPlacement.RELATED)
+											.addComponent(textNome, GroupLayout.PREFERRED_SIZE, 299, GroupLayout.PREFERRED_SIZE))
+										.addGroup(gl_PainelCampos.createSequentialGroup()
+											.addGroup(gl_PainelCampos.createParallelGroup(Alignment.TRAILING)
+												.addComponent(lblEndereco, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
+												.addComponent(lblTelefone, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE))
+											.addPreferredGap(ComponentPlacement.RELATED)
+											.addGroup(gl_PainelCampos.createParallelGroup(Alignment.LEADING)
+												.addComponent(textEndereco, GroupLayout.PREFERRED_SIZE, 299, GroupLayout.PREFERRED_SIZE)
+												.addComponent(textTelefone, GroupLayout.PREFERRED_SIZE, 299, GroupLayout.PREFERRED_SIZE)))))
+								.addGroup(gl_PainelCampos.createSequentialGroup()
+									.addGap(32)
+									.addComponent(btnLimpaATela, GroupLayout.PREFERRED_SIZE, 382, GroupLayout.PREFERRED_SIZE)))
+							.addGap(18)
 							.addGroup(gl_PainelCampos.createParallelGroup(Alignment.LEADING, false)
 								.addComponent(btnExcluir, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 								.addComponent(btnConsultar, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -151,26 +226,26 @@ public class TelaCRUDPessoa<objeto, objeto1> extends JInternalFrame {
 									.addGap(18)
 									.addGroup(gl_PainelCampos.createParallelGroup(Alignment.BASELINE)
 										.addComponent(lblTelefone)
-										.addComponent(textValorPago, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
+										.addComponent(textTelefone, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
 							.addGap(18)
 							.addGroup(gl_PainelCampos.createParallelGroup(Alignment.BASELINE)
-								.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblTelefone_1)))
+								.addComponent(textEndereco, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblEndereco))
+							.addGap(36)
+							.addComponent(btnLimpaATela))
 						.addGroup(gl_PainelCampos.createSequentialGroup()
 							.addComponent(btninserir)
 							.addGap(18)
-							.addGroup(gl_PainelCampos.createSequentialGroup()
-								.addComponent(btnAlterar)
-								.addGap(18)
-								.addComponent(btnExcluir))
+							.addComponent(btnAlterar)
+							.addGap(18)
+							.addComponent(btnExcluir)
 							.addGap(9)
 							.addComponent(btnConsultar)
 							.addGap(18)
 							.addComponent(btnFechar)))
-					.addGap(67))
+					.addGap(46))
 		);
 		PainelCampos.setLayout(gl_PainelCampos);
 
 	}
-
 }

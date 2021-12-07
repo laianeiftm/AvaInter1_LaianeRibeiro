@@ -12,7 +12,7 @@ public class PessoaControle {
 	private EntityManager em;
 
 	public PessoaControle() {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("eventos_bd");
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("projeto");
 		em = emf.createEntityManager();
 	}
 
