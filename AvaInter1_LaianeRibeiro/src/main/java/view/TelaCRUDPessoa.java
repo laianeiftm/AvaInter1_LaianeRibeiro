@@ -91,7 +91,7 @@ public class TelaCRUDPessoa<objeto, objeto1> extends JInternalFrame {
 				objeto = new Pessoa (null, textNome.getText(), textTelefone.getText(), textEndereco.getText());
 				controle.inserir(objeto);
 				JOptionPane.showMessageDialog(null, "Pessoa cadastrada com sucesso");
-			
+				  limparTela ();
 			}
 		});
 					
@@ -126,6 +126,7 @@ public class TelaCRUDPessoa<objeto, objeto1> extends JInternalFrame {
 	            	}
 
 			}
+			
 		});
 			
 		JButton btnAlterar = new JButton("Alterar");
